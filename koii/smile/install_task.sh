@@ -230,7 +230,7 @@ function stop_w8_coin {
           echo "Continuing script execution..."
           ;;
       esac
-      break
+        break
     else
       case $LANGUAGE in
         EN)
@@ -246,7 +246,7 @@ function stop_w8_coin {
           echo "Incorrect input. Please, enter 'koii' to continue..."
           ;;
       esac
-      fi
+    fi
 done
 }
 
