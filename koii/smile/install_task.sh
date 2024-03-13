@@ -198,6 +198,7 @@ function koii_addr {
 }
 
 function stop_w8_coin {
+  echo "new func"
   case $LANGUAGE in
     EN)
       echo -e "${GREEN}Go to the faucet and complete tasks to get test coins for launch (minimum 4KOII)\n\t https://faucet.koii.network/ \n\t IMPORTANT: using the referral link “FA9658B260B8” you will immediately receive 5KOII for free and without tasks!!!\nComplete all tasks on the tap and enter |koii| to continue the script.${NORMAL}"
@@ -212,40 +213,39 @@ function stop_w8_coin {
       echo -e "${GREEN}Go to the faucet and complete tasks to get test coins for launch (minimum 4KOII)\n\t https://faucet.koii.network/ \n\t IMPORTANT: using the referral link “FA9658B260B8” you will immediately receive 5KOII for free and without tasks!!!\nComplete all tasks on the tap and enter |koii| to continue the script.${NORMAL}"
       ;;
   esac
-  
   while true; do
     read input
     if [ "$input" = "koii" ]; then
-      case $LANGUAGE in
-        EN)
-          echo "Continuing script execution..."
-          ;;
-        UA)
-          echo "Продовжуємо виконання скрипта..."
-          ;;
-        RU)
-          echo "Продолжаем выполнение скрипта..."
-          ;;
-        *)
-          echo "Continuing script execution..."
-          ;;
-      esac
+    case $LANGUAGE in
+      EN)
+        echo "Continuing script execution..."
+        ;;
+      UA)
+        echo "Продовжуємо виконання скрипта..."
+        ;;
+      RU)
+        echo "Продолжаем выполнение скрипта..."
+        ;;
+      *)
+        echo "Continuing script execution..."
+        ;;
+    esac
         break
     else
-      case $LANGUAGE in
-        EN)
-          echo "Incorrect input. Please, enter 'koii' to continue..."
-          ;;
-        UA)
-          echo "Невірний ввід. Будь ласка, введіть 'koii' для продовження..."
-          ;;
-        RU)
-          echo "Неверный ввод. Пожалуйста, введите 'koii' для продолжения..."
-          ;;
-        *)
-          echo "Incorrect input. Please, enter 'koii' to continue..."
-          ;;
-      esac
+        case $LANGUAGE in
+          EN)
+            echo "Incorrect input. Please, enter 'koii' to continue..."
+            ;;
+          UA)
+            echo "Невірний ввід. Будь ласка, введіть 'koii' для продовження..."
+            ;;
+          RU)
+            echo "Неверный ввод. Пожалуйста, введите 'koii' для продолжения..."
+            ;;
+          *)
+            echo "Incorrect input. Please, enter 'koii' to continue..."
+            ;;
+        esac
     fi
 done
 }
