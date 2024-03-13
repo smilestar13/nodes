@@ -65,10 +65,6 @@ function install_tools {
     sudo apt update && sudo apt dist-upgrade -y
 }
 
-function install_node_npm {
-  sudo npm install -g npm@10.5.0
-}
-
 function clone_repo {
     case $LANGUAGE in
         EN)
@@ -361,6 +357,10 @@ function update_docker_compose {
   fi
 }
 
+function install_node_npm {
+  sudo npm install -g npm@10.5.0
+}
+
 function docker_compose_up {
     case $LANGUAGE in
         EN)
@@ -422,7 +422,6 @@ line_2
 choose_language
 line_1
 install_tools
-install_node_npm
 line_1
 clone_repo
 env
@@ -439,6 +438,7 @@ install_docker_compose
 line_1
 update_docker_compose
 line_1
+install_node_npm
 docker_compose_up
 line_2
 echo_info
