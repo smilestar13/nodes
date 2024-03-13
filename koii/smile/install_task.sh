@@ -65,7 +65,7 @@ function install_tools {
     sudo apt update && sudo apt dist-upgrade -y
 }
 
-function install_npm {
+function install_node_npm {
   sudo npm install -g npm@10.5.0
 }
 
@@ -198,55 +198,55 @@ function koii_addr {
 }
 
 function stop_w8_coin {
-    case $LANGUAGE in
-        EN)
-            echo -e "${GREEN}Go to the faucet and complete tasks to get test coins for launch (minimum 4KOII)\n\t https://faucet.koii.network/ \n\t IMPORTANT: using the referral link “FA9658B260B8” you will immediately receive 5KOII for free and without tasks!!!\nComplete all tasks on the tap and enter |koii| to continue the script.${NORMAL}"
-            ;;
-        UA)
-            echo -e "${GREEN}Переходимо в кран і виконуємо завдання щоб отримати тестові монети для запуску (мінімум 4KOII)\n\t https://faucet.koii.network/ \n\tВАЖЛИВО: за реферальним посиланням «FA9658B260B8» ви відразу отримаєте 5KOII безкоштовно і без завдань!!! \nВиконайте всі завдання на крані та введіть |koii| продовження роботи скрипта.${NORMAL}"
-            ;;
-        RU)
-            echo -e "${GREEN}Переходим в кран и выполняем задания чтобы получить тестовые монеты для запуска (минимум 4KOII)\n\t https://faucet.koii.network/ \n\tВАЖНО: по реферальной ссылке «FA9658B260B8» вы сразу получите 5KOII бесплатно и без заданий!!!\nВыполните все задания на кране и введите |koii| для продолжения работы скрипта.${NORMAL}"
-            ;;
-        *)
-            echo -e "${GREEN}Go to the faucet and complete tasks to get test coins for launch (minimum 4KOII)\n\t https://faucet.koii.network/ \n\t IMPORTANT: using the referral link “FA9658B260B8” you will immediately receive 5KOII for free and without tasks!!!\nComplete all tasks on the tap and enter |koii| to continue the script.${NORMAL}"
-            ;;
+  case $LANGUAGE in
+    EN)
+      echo -e "${GREEN}Go to the faucet and complete tasks to get test coins for launch (minimum 4KOII)\n\t https://faucet.koii.network/ \n\t IMPORTANT: using the referral link “FA9658B260B8” you will immediately receive 5KOII for free and without tasks!!!\nComplete all tasks on the tap and enter |koii| to continue the script.${NORMAL}"
+      ;;
+    UA)
+      echo -e "${GREEN}Переходимо в кран і виконуємо завдання щоб отримати тестові монети для запуску (мінімум 4KOII)\n\t https://faucet.koii.network/ \n\tВАЖЛИВО: за реферальним посиланням «FA9658B260B8» ви відразу отримаєте 5KOII безкоштовно і без завдань!!! \nВиконайте всі завдання на крані та введіть |koii| продовження роботи скрипта.${NORMAL}"
+      ;;
+    RU)
+      echo -e "${GREEN}Переходим в кран и выполняем задания чтобы получить тестовые монеты для запуска (минимум 4KOII)\n\t https://faucet.koii.network/ \n\tВАЖНО: по реферальной ссылке «FA9658B260B8» вы сразу получите 5KOII бесплатно и без заданий!!!\nВыполните все задания на кране и введите |koii| для продолжения работы скрипта.${NORMAL}"
+      ;;
+    *)
+      echo -e "${GREEN}Go to the faucet and complete tasks to get test coins for launch (minimum 4KOII)\n\t https://faucet.koii.network/ \n\t IMPORTANT: using the referral link “FA9658B260B8” you will immediately receive 5KOII for free and without tasks!!!\nComplete all tasks on the tap and enter |koii| to continue the script.${NORMAL}"
+      ;;
     esac
   
-    while true; do
+  while true; do
     read input
     if [ "$input" = "koii" ]; then
-            case $LANGUAGE in
-                EN)
-                    echo "Continuing script execution..."
-                    ;;
-                UA)
-                    echo "Продовжуємо виконання скрипта..."
-                    ;;
-                RU)
-                    echo "Продолжаем выполнение скрипта..."
-                    ;;
-                *)
-                    echo "Continuing script execution..."
-                    ;;
-            esac
-        break
+      case $LANGUAGE in
+        EN)
+          echo "Continuing script execution..."
+          ;;
+        UA)
+          echo "Продовжуємо виконання скрипта..."
+          ;;
+        RU)
+          echo "Продолжаем выполнение скрипта..."
+          ;;
+        *)
+          echo "Continuing script execution..."
+          ;;
+      esac
+      break
     else
-            case $LANGUAGE in
-                EN)
-                    echo "Incorrect input. Please, enter 'koii' to continue..."
-                    ;;
-                UA)
-                    echo "Невірний ввід. Будь ласка, введіть 'koii' для продовження..."
-                    ;;
-                RU)
-                    echo "Неверный ввод. Пожалуйста, введите 'koii' для продолжения..."
-                    ;;
-                *)
-                    echo "Incorrect input. Please, enter 'koii' to continue..."
-                    ;;
-            esac
-        fi
+      case $LANGUAGE in
+        EN)
+          echo "Incorrect input. Please, enter 'koii' to continue..."
+          ;;
+        UA)
+          echo "Невірний ввід. Будь ласка, введіть 'koii' для продовження..."
+          ;;
+        RU)
+          echo "Неверный ввод. Пожалуйста, введите 'koii' для продолжения..."
+          ;;
+        *)
+          echo "Incorrect input. Please, enter 'koii' to continue..."
+          ;;
+      esac
+      fi
 done
 }
 
@@ -419,6 +419,8 @@ colors
 line_1
 logo
 line_2
+choose_language
+line_1
 install_tools
 install_node_npm
 line_1
