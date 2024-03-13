@@ -18,6 +18,12 @@ function line_2 {
   echo -e "${RED}##############################################################################${NORMAL}"
 }
 
+function checker {
+    echo "Press Enter to continue or type something:"
+    read dummy
+    echo "You entered: $dummy"
+}
+
 function choose_language {
     echo "Choose your language / Оберіть вашу мову / Выберите ваш язык:"
     echo "1 - English"
