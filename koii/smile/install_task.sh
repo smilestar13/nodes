@@ -211,7 +211,7 @@ function stop_w8_coin {
     *)
       echo -e "${GREEN}Go to the faucet and complete tasks to get test coins for launch (minimum 4KOII)\n\t https://faucet.koii.network/ \n\t IMPORTANT: using the referral link “FA9658B260B8” you will immediately receive 5KOII for free and without tasks!!!\nComplete all tasks on the tap and enter |koii| to continue the script.${NORMAL}"
       ;;
-    esac
+  esac
   
   while true; do
     read input
