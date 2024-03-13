@@ -246,42 +246,6 @@ function stop_w8_coin {
 done
 }
 
-function install_docker {
-    case $LANGUAGE in
-        EN)
-            echo -e "${GREEN}Installing Docker...${NORMAL}"
-            ;;
-        UA)
-            echo -e "${GREEN}Встановлення Docker...${NORMAL}"
-            ;;
-        RU)
-            echo -e "${GREEN}Установка Docker...${NORMAL}"
-            ;;
-        *)
-            echo -e "${GREEN}Installing Docker...${NORMAL}"
-            ;;
-    esac
-    sudo apt install docker
-}
-
-function install_docker_compose {
-    case $LANGUAGE in
-        EN)
-            echo -e "${GREEN}Installing Docker Compose...${NORMAL}"
-            ;;
-        UA)
-            echo -e "${GREEN}Встановлення Docker Compose...${NORMAL}"
-            ;;
-        RU)
-            echo -e "${GREEN}Установка Docker Compose...${NORMAL}"
-            ;;
-        *)
-            echo -e "${GREEN}Installing Docker Compose...${NORMAL}"
-            ;;
-    esac
-    sudo apt install docker-compose
-}
-
 function update_docker_compose {
   CURRENT_VERSION=$(docker-compose --version | grep -o '[0-9]*\.[0-9]*\.[0-9]*')
   REQUIRED_VERSION="1.29"
@@ -432,9 +396,6 @@ line_2
 koii_addr
 line_2
 stop_w8_coin
-line_1
-install_docker
-install_docker_compose
 line_1
 update_docker_compose
 line_1
