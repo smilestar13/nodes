@@ -114,7 +114,7 @@ RUN_NON_WHITELISTED_TASKS=true
 # For the purpose of automating the staking wallet creation, the value must be greater 
 # than the sum of all TASK_STAKES, the wallet will only be created and staking on task 
 # will be done if it doesn't already exist
-INITIAL_STAKING_WALLET_BALANCE=3
+INITIAL_STAKING_WALLET_BALANCE=4
 
 # environment
 ENVIRONMENT="production"
@@ -127,7 +127,7 @@ K2_NODE_URL="https://testnet.koii.live"
 # TASKS="id1,id2,id3"
 # TASK_STAKES="1,1,1
 TASKS="4ipWnABntsvJPsAkwyMF7Re4z39ZUMs2S2dfEm5aa2is"
-TASK_STAKES=2
+TASK_STAKES=3
 
 # User can enter as many environment variables as they like below. These can be task
 # specific variables that are needed for the task to perform it's job. Some examples:
@@ -156,6 +156,7 @@ function install_cli {
 }
 
 function generate_wallet {
+    WALLET_PATH="/root/.config/koii/id.json"
     case $LANGUAGE in
         EN)
             echo -e "${GREEN}Generate Koii wallet...${NORMAL}"
@@ -164,16 +165,34 @@ function generate_wallet {
             echo -e "${GREEN}Створюємо Koii гаманець...${NORMAL}"
             ;;
         RU)
-            echo -e "${GREEN}Создам Koii кошелек...${NORMAL}"
+            echo -e "${GREEN}Создаю Koii кошелек...${NORMAL}"
             ;;
         *)
             echo -e "${GREEN}Generate Koii wallet...${NORMAL}"
             ;;
     esac
-    
-  koii config set --url https://testnet.koii.live
-  koii-keygen new -o /root/.config/koii/id.json --no-bip39-passphrase >> $HOME/koii_wallet.txt
+
+    if [ -f "$WALLET_PATH" ]; then
+        case $LANGUAGE in
+            EN)
+                echo -e "${YELLOW}The Koii wallet already exists.${NORMAL}"
+                ;;
+            UA)
+                echo -e "${YELLOW}Koii гаманець вже існує.${NORMAL}"
+                ;;
+            RU)
+                echo -e "${YELLOW}Koii кошелек уже существует.${NORMAL}"
+                ;;
+            *)
+                echo -e "${YELLOW}The Koii wallet already exists.${NORMAL}"
+                ;;
+        esac
+    else
+        koii config set --url https://testnet.koii.live
+        koii-keygen new -o $WALLET_PATH --no-bip39-passphrase >> $HOME/koii_wallet.txt
+    fi
 }
+
 
 function koii_addr {
     case $LANGUAGE in
@@ -244,6 +263,39 @@ function stop_w8_coin {
         esac
     fi
 done
+}
+
+function install_docker {
+    echo -e "${C_LGn}Updating package list and installing prerequisites...${RES}"
+    sudo apt update
+    sudo apt upgrade -y
+    sudo apt install curl apt-transport-https ca-certificates gnupg lsb-release apparmor -y
+
+    echo -e "${C_LGn}Adding Docker's official GPG key and repository...${RES}"
+    . /etc/*-release
+    if [ ! -f /usr/share/keyrings/docker-archive-keyring.gpg ]; then
+        wget -qO- "https://download.docker.com/linux/${DISTRIB_ID,,}/gpg" | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    fi
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    echo -e "${C_LGn}Installing Docker...${RES}"
+    sudo apt update
+    sudo apt install docker-ce docker-ce-cli containerd.io -y
+    docker_version=$(apt-cache madison docker-ce | grep -oPm1 "(?<=docker-ce \| )([^_]+)(?= \| https)")
+    sudo apt install docker-ce="$docker_version" docker-ce-cli="$docker_version" containerd.io -y
+}
+
+function install_docker_compose {
+    echo -e "${C_LGn}Updating package list and installing prerequisites for Docker Compose...${RES}"
+    sudo apt update
+    sudo apt upgrade -y
+    sudo apt install wget jq -y
+
+    echo -e "${C_LGn}Installing Docker Compose...${RES}"
+    local docker_compose_version=v2.16.0
+    sudo wget -O /usr/bin/docker-compose "https://github.com/docker/compose/releases/download/${docker_compose_version}/docker-compose-$(uname -s)-$(uname -m)"
+    sudo chmod +x /usr/bin/docker-compose
+    . $HOME/.bash_profile
 }
 
 function update_docker_compose {
@@ -322,8 +374,22 @@ function update_docker_compose {
 }
 
 function install_node_npm {
-  sudo npm install -g npm@10.5.0
+    sudo apt-get update
+    sudo apt-get install -y ca-certificates curl gnupg
+    
+    sudo mkdir -p /etc/apt/keyrings
+    rm -f /etc/apt/keyrings/nodesource.gpg
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+    NODE_MAJOR=20
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+    
+    sudo apt-get update
+    sudo apt-get install nodejs yarn build-essential jq git -y
+    
+    sudo npm install -g npm@10.5.0
+    npm install -g yarn --force
 }
+
 
 function docker_compose_up {
     case $LANGUAGE in
@@ -397,9 +463,14 @@ koii_addr
 line_2
 stop_w8_coin
 line_1
+install_docker
+line_1
+install_docker_compose
+line_1
 update_docker_compose
 line_1
 install_node_npm
+line_1
 docker_compose_up
 line_2
 echo_info
