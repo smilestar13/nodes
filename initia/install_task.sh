@@ -10,12 +10,12 @@ function logo {
   curl -s https://raw.githubusercontent.com/smilestar13/nodes/main/tools/logo/smilestar.sh | bash
 }
 
-function line_1 {
+function line {
   echo -e "${GREEN}-----------------------------------------------------------------------------${NORMAL}"
 }
 
-function line_2 {
-  echo -e "${RED}##############################################################################${NORMAL}"
+function output {
+  echo -e "${YELLOW}$1${NORMAL}"
 }
 
 function install_tools {
