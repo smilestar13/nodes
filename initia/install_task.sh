@@ -42,9 +42,6 @@ function source_git {
   cd && rm -rf initia
   git clone https://github.com/initia-labs/initia
   cd initia
-  git checkout v0.2.14cd && rm -rf initia
-  git clone https://github.com/initia-labs/initia
-  cd initia
   git checkout v0.2.14
   make install
 }
@@ -91,18 +88,18 @@ function last_snap {
 
 function create_service {
   sudo tee /etc/systemd/system/initiad.service > /dev/null << EOF
-  [Unit]
-  Description=Initia node service
-  After=network-online.target
-  [Service]
-  User=$USER
-  ExecStart=$(which initiad) start
-  Restart=on-failure
-  RestartSec=10
-  LimitNOFILE=65535
-  [Install]
-  WantedBy=multi-user.target
-  EOF
+[Unit]
+Description=Initia node service
+After=network-online.target
+[Service]
+User=$USER
+ExecStart=$(which initiad) start
+Restart=on-failure
+RestartSec=10
+LimitNOFILE=65535
+[Install]
+WantedBy=multi-user.target
+EOF
   sudo systemctl daemon-reload
   sudo systemctl enable initiad.service
 }
@@ -138,3 +135,5 @@ function main {
     line
     output "From Smilestar with love ^_^"
 }
+
+main
