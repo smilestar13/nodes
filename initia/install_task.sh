@@ -129,8 +129,6 @@ function main {
     last_snap
     create_service
     line
-    output_normal "Installation complete"
-    line
     sudo systemctl start initiad.service
     line
     output "From Smilestar with love ^_^"
