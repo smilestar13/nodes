@@ -42,7 +42,7 @@ function source_git {
   cd && rm -rf initia
   git clone https://github.com/initia-labs/initia
   cd initia
-  git checkout v0.2.14
+  git checkout v0.2.15
   make install
 }
 
@@ -83,7 +83,7 @@ function ports {
 }
 
 function last_snap {
-  curl -L https://snapshots.polkachu.com/testnet-snapshots/initia/initia_187918.tar.lz4 | tar -Ilz4 -xf - -C $HOME/.initia
+  curl -L https://snapshots.polkachu.com/testnet-snapshots/initia/initia_202803.tar.lz4 | tar -Ilz4 -xf - -C $HOME/.initia
 }
 
 function create_service {
