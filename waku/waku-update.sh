@@ -26,7 +26,7 @@ function cleanup {
   else
     echo "Делаем бекап ключей"
     mkdir -p $HOME/nwaku_backups/keystore0.30
-    cp $HOME/nwaku-compose/keystore/keystore.json $HOME/nwaku_backups/keystore0.30/keystore.json
+    sudo cp $HOME/nwaku-compose/keystore/keystore.json $HOME/nwaku_backups/keystore0.30/keystore.json
     sudo rm -rf $HOME/nwaku-compose/keystore/
   fi
   
@@ -43,7 +43,7 @@ function update {
   sudo rm -rf $HOME/nwaku-compose/.env
   cd $HOME/nwaku-compose
   git pull
-  cp .env.example .env
+  sudo cp .env.example .env
 
   # Check which variable has a value
   if [ -n "$RLN_RELAY_ETH_CLIENT_ADDRESS" ]; then
