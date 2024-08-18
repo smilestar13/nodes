@@ -4,7 +4,7 @@ echo "--------------------------------------------------------------------------
 curl -s https://raw.githubusercontent.com/smilestar13/nodes/main/tools/logo/smilestar.sh | bash
 echo "-----------------------------------------------------------------------------"
 
-echo "Введите сид фразу от кошелька, который будет использоваться для воркера V2"
+echo "Введите сид фразу от кошелька, который будет использоваться для воркера V3"
 read WALLET_SEED_PHRASE
 
 docker compose -f $HOME/nwaku-compose/docker-compose.yml down -v
@@ -22,7 +22,7 @@ cd allora-huggingface-walkthrough
 
 sudo cp config.example.json config.json
 
-sudo echo '{
+sudo bash -c ' echo "{
     "wallet": {
         "addressKeyName": "test",
         "addressRestoreMnemonic": "Seed Phrase",
@@ -118,7 +118,7 @@ sudo echo '{
        }
        
    ]
-}' > config.json
+}" > config.json'
 
 sudo sed -i "s|Seed Phrase|$WALLET_SEED_PHRASE|" config.json
 
