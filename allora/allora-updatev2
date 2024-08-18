@@ -4,7 +4,7 @@ echo "--------------------------------------------------------------------------
 curl -s https://raw.githubusercontent.com/smilestar13/nodes/main/tools/logo/smilestar.sh | bash
 echo "-----------------------------------------------------------------------------"
 
-echo "Введите сид фразу от кошелька, который будет использоваться для воркера"
+echo "Введите сид фразу от кошелька, который будет использоваться для воркера V2"
 read WALLET_SEED_PHRASE
 
 docker compose -f $HOME/nwaku-compose/docker-compose.yml down -v
@@ -13,7 +13,8 @@ cd basic-coin-prediction-node
 docker compose down -v
 docker stop $(docker ps -a | grep basic-coin-prediction-node-updater | awk '{print $1}') $(docker ps -a | grep basic-coin-prediction-node-inference | awk '{print $1}')  $(docker ps -a | grep alloranetwork | awk '{print $1}')
 docker rm $(docker ps -a | grep basic-coin-prediction-node-updater | awk '{print $1}') $(docker ps -a | grep basic-coin-prediction-node-inference | awk '{print $1}')  $(docker ps -a | grep alloranetwork | awk '{print $1}')
-cd $HOME && rm -rf basic-coin-prediction-node
+cd $HOME
+sudo rm -rf basic-coin-prediction-node
 
 cd $HOME
 git clone https://github.com/allora-network/allora-huggingface-walkthrough
@@ -21,7 +22,7 @@ cd allora-huggingface-walkthrough
 
 sudo cp config.example.json config.json
 
-echo '{
+sudo echo '{
     "wallet": {
         "addressKeyName": "test",
         "addressRestoreMnemonic": "Seed Phrase",
