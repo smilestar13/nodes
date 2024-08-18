@@ -4,7 +4,7 @@ echo "--------------------------------------------------------------------------
 curl -s https://raw.githubusercontent.com/smilestar13/nodes/main/tools/logo/smilestar.sh | bash
 echo "-----------------------------------------------------------------------------"
 
-echo "Введите сид фразу от кошелька, который будет использоваться для воркера V3"
+echo "Введите сид фразу от кошелька, который будет использоваться для воркера V4"
 read WALLET_SEED_PHRASE
 
 docker compose -f $HOME/nwaku-compose/docker-compose.yml down -v
@@ -17,106 +17,106 @@ cd $HOME
 sudo rm -rf basic-coin-prediction-node
 
 cd $HOME
+sudo rm -rf $HOME/allora-huggingface-walkthrough
 git clone https://github.com/allora-network/allora-huggingface-walkthrough
 cd allora-huggingface-walkthrough
 
 sudo cp config.example.json config.json
 
-sudo bash -c ' echo "{
-    "wallet": {
-        "addressKeyName": "test",
-        "addressRestoreMnemonic": "Seed Phrase",
-        "alloraHomeDir": "$HOME/.allorad",
-        "gas": "1000000",
-        "gasAdjustment": 1.0,
-        "nodeRpc": "https://allora-rpc.testnet-1.testnet.allora.network/",
-        "maxRetries": 1,
-        "delay": 1,
-        "submitTx": false
+sudo bash -c 'echo "{
+    \"wallet\": {
+        \"addressKeyName\": \"test\",
+        \"addressRestoreMnemonic\": \"Seed Phrase\",
+        \"alloraHomeDir\": \"$HOME/.allorad\",
+        \"gas\": \"1000000\",
+        \"gasAdjustment\": 1.0,
+        \"nodeRpc\": \"https://allora-rpc.testnet-1.testnet.allora.network/\",
+        \"maxRetries\": 1,
+        \"delay\": 1,
+        \"submitTx\": false
     },
-    "worker": [
+    \"worker\": [
        {
-           "topicId": 1,
-           "inferenceEntrypointName": "api-worker-reputer",
-           "loopSeconds": 1,
-           "parameters": {
-               "InferenceEndpoint": "http://inference:8000/inference/{Token}",
-               "Token": "ETH"
+           \"topicId\": 1,
+           \"inferenceEntrypointName\": \"api-worker-reputer\",
+           \"loopSeconds\": 1,
+           \"parameters\": {
+               \"InferenceEndpoint\": \"http://inference:8000/inference/{Token}\",
+               \"Token\": \"ETH\"
            }
        },
        {
-           "topicId": 2,
-           "inferenceEntrypointName": "api-worker-reputer",
-           "loopSeconds": 3,
-           "parameters": {
-               "InferenceEndpoint": "http://inference:8000/inference/{Token}",
-               "Token": "ETH"
+           \"topicId\": 2,
+           \"inferenceEntrypointName\": \"api-worker-reputer\",
+           \"loopSeconds\": 3,
+           \"parameters\": {
+               \"InferenceEndpoint\": \"http://inference:8000/inference/{Token}\",
+               \"Token\": \"ETH\"
            }
        },
        {
-           "topicId": 3,
-           "inferenceEntrypointName": "api-worker-reputer",
-           "loopSeconds": 5,
-           "parameters": {
-               "InferenceEndpoint": "http://inference:8000/inference/{Token}",
-               "Token": "BTC"
+           \"topicId\": 3,
+           \"inferenceEntrypointName\": \"api-worker-reputer\",
+           \"loopSeconds\": 5,
+           \"parameters\": {
+               \"InferenceEndpoint\": \"http://inference:8000/inference/{Token}\",
+               \"Token\": \"BTC\"
            }
        },
        {
-           "topicId": 4,
-           "inferenceEntrypointName": "api-worker-reputer",
-           "loopSeconds": 2,
-           "parameters": {
-               "InferenceEndpoint": "http://inference:8000/inference/{Token}",
-               "Token": "BTC"
+           \"topicId\": 4,
+           \"inferenceEntrypointName\": \"api-worker-reputer\",
+           \"loopSeconds\": 2,
+           \"parameters\": {
+               \"InferenceEndpoint\": \"http://inference:8000/inference/{Token}\",
+               \"Token\": \"BTC\"
            }
        },
        {
-           "topicId": 5,
-           "inferenceEntrypointName": "api-worker-reputer",
-           "loopSeconds": 4,
-           "parameters": {
-               "InferenceEndpoint": "http://inference:8000/inference/{Token}",
-               "Token": "SOL"
+           \"topicId\": 5,
+           \"inferenceEntrypointName\": \"api-worker-reputer\",
+           \"loopSeconds\": 4,
+           \"parameters\": {
+               \"InferenceEndpoint\": \"http://inference:8000/inference/{Token}\",
+               \"Token\": \"SOL\"
            }
        },
        {
-           "topicId": 6,
-           "inferenceEntrypointName": "api-worker-reputer",
-           "loopSeconds": 5,
-           "parameters": {
-               "InferenceEndpoint": "http://inference:8000/inference/{Token}",
-               "Token": "SOL"
+           \"topicId\": 6,
+           \"inferenceEntrypointName\": \"api-worker-reputer\",
+           \"loopSeconds\": 5,
+           \"parameters\": {
+               \"InferenceEndpoint\": \"http://inference:8000/inference/{Token}\",
+               \"Token\": \"SOL\"
            }
        },
        {
-           "topicId": 7,
-           "inferenceEntrypointName": "api-worker-reputer",
-           "loopSeconds": 2,
-           "parameters": {
-               "InferenceEndpoint": "http://inference:8000/inference/{Token}",
-               "Token": "ETH"
+           \"topicId\": 7,
+           \"inferenceEntrypointName\": \"api-worker-reputer\",
+           \"loopSeconds\": 2,
+           \"parameters\": {
+               \"InferenceEndpoint\": \"http://inference:8000/inference/{Token}\",
+               \"Token\": \"ETH\"
            }
        },
        {
-           "topicId": 8,
-           "inferenceEntrypointName": "api-worker-reputer",
-           "loopSeconds": 3,
-           "parameters": {
-               "InferenceEndpoint": "http://inference:8000/inference/{Token}",
-               "Token": "BNB"
+           \"topicId\": 8,
+           \"inferenceEntrypointName\": \"api-worker-reputer\",
+           \"loopSeconds\": 3,
+           \"parameters\": {
+               \"InferenceEndpoint\": \"http://inference:8000/inference/{Token}\",
+               \"Token\": \"BNB\"
            }
        },
        {
-           "topicId": 9,
-           "inferenceEntrypointName": "api-worker-reputer",
-           "loopSeconds": 5,
-           "parameters": {
-               "InferenceEndpoint": "http://inference:8000/inference/{Token}",
-               "Token": "ARB"
+           \"topicId\": 9,
+           \"inferenceEntrypointName\": \"api-worker-reputer\",
+           \"loopSeconds\": 5,
+           \"parameters\": {
+               \"InferenceEndpoint\": \"http://inference:8000/inference/{Token}\",
+               \"Token\": \"ARB\"
            }
        }
-       
    ]
 }" > config.json'
 
