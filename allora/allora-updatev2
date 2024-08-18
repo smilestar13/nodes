@@ -4,7 +4,7 @@ echo "--------------------------------------------------------------------------
 curl -s https://raw.githubusercontent.com/smilestar13/nodes/main/tools/logo/smilestar.sh | bash
 echo "-----------------------------------------------------------------------------"
 
-echo "Введите сид фразу от кошелька, который будет использоваться для воркера"
+echo "Введите сид фразу от кошелька, который будет использоваться для воркера V2"
 read WALLET_SEED_PHRASE
 
 docker compose -f $HOME/nwaku-compose/docker-compose.yml down -v
@@ -174,7 +174,7 @@ def get_inference(token):
 
     headers = {
         "accept": "application/json",
-        "x-cg-demo-api-key": "CG-TAa9JWqKXM1Kg9ja9nPMXMoe" # replace with your API key
+        "x-cg-demo-api-key": "CG-yzC5Sx5wS2VRQ9wHJboJyVa1" # replace with your API key
     }
 
     response = requests.get(url, headers=headers)
