@@ -72,6 +72,19 @@ function dawn_worker {
   sleep 1000
 }
 
+
+function elixir_worker { 
+  echo "Запуск проверки elixir_worker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
+  ansible-playbook -i inventory elixir_checker.yml >> $LOG_FILE 2>&1
+
+  if [ $? -eq 0 ]; then
+      echo "elixir_worker.yml выполнен успешно в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
+  else
+      echo "Ошибка при выполнении elixir_worker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
+  fi
+  sleep 1000
+}
+
 function end_work {
   echo "Период отчетов успешно окончен в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
   cd /root/vprofile/node
@@ -90,6 +103,8 @@ line_1
 og_worker
 line_1
 dawn_worker
+line_1
+elixir_worker
 line_2
 end_work
 line_2
