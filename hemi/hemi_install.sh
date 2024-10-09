@@ -69,13 +69,6 @@ EOF
   sleep 15
 }
 
-function save_info {
-  PUBLIC_ADDRESS=$(journalctl -n 100 -u hemi -o cat | grep -oP '(?<=address )[^\s]+')
-  echo "Saving PUBLIC_ADDRESS to /root/heminetwork/hemi-data.csv"
-  echo "Public Address" > /root/heminetwork/hemi-data.csv
-  echo "$PUBLIC_ADDRESS" >> /root/heminetwork/hemi-data.csv
-}
-
 colors
 line_1
 logo
@@ -87,6 +80,4 @@ line_1
 new_wallet
 line_2
 start_mainer
-line_1
-save_info
 line_2
