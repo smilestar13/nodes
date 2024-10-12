@@ -26,7 +26,7 @@ function start_work {
 
 function allora_worker { 
   echo "Запуск проверки allora_checker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
-  ansible-playbook -i inventory allora_checker.yml >> $LOG_FILE 2>&1
+  ansible-playbook -i inventory allora_checker.yml -f 1 >> $LOG_FILE 2>&1
 
   if [ $? -eq 0 ]; then
       echo "allora_checker.yml выполнен успешно в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
@@ -38,7 +38,7 @@ function allora_worker {
 
 function waku_worker { 
   echo "Запуск проверки waku_checker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
-  ansible-playbook -i inventory waku_peers.yml >> $LOG_FILE 2>&1
+  ansible-playbook -i inventory waku_peers.yml -f 1 >> $LOG_FILE 2>&1
 
   if [ $? -eq 0 ]; then
       echo "waku_peers.yml выполнен успешно в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
@@ -50,7 +50,7 @@ function waku_worker {
 
 function og_worker { 
   echo "Запуск проверки og_checker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
-  ansible-playbook -i inventory og_check_sync.yml >> $LOG_FILE 2>&1
+  ansible-playbook -i inventory og_check_sync.yml -f 1 >> $LOG_FILE 2>&1
 
   if [ $? -eq 0 ]; then
       echo "og_checker.yml выполнен успешно в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
@@ -62,7 +62,7 @@ function og_worker {
 
 function dawn_worker { 
   echo "Запуск проверки dawn_worker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
-  ansible-playbook -i inventory dawn_checker.yml >> $LOG_FILE 2>&1
+  ansible-playbook -i inventory dawn_checker.yml -f 1 >> $LOG_FILE 2>&1
 
   if [ $? -eq 0 ]; then
       echo "dawn_worker.yml выполнен успешно в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
@@ -74,7 +74,7 @@ function dawn_worker {
 
 function elixir_worker { 
   echo "Запуск проверки elixir_worker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
-  ansible-playbook -i inventory elixir_checker.yml >> $LOG_FILE 2>&1
+  ansible-playbook -i inventory elixir_checker.yml -f 1 >> $LOG_FILE 2>&1
 
   if [ $? -eq 0 ]; then
       echo "elixir_worker.yml выполнен успешно в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
@@ -86,12 +86,24 @@ function elixir_worker {
 
 function rivalz_worker { 
   echo "Запуск проверки rivalz_worker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
-  ansible-playbook -i inventory rivalz_checker.yml >> $LOG_FILE 2>&1
+  ansible-playbook -i inventory rivalz_checker.yml -f 1 >> $LOG_FILE 2>&1
 
   if [ $? -eq 0 ]; then
       echo "rivalz_worker.yml выполнен успешно в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
   else
       echo "Ошибка при выполнении rivalz_worker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
+  fi
+  sleep 1000
+}
+
+function system_worker { 
+  echo "Запуск проверки system_worker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
+  ansible-playbook -i inventory server-health.yml -f 1 >> $LOG_FILE 2>&1
+
+  if [ $? -eq 0 ]; then
+      echo "system_worker.yml выполнен успешно в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
+  else
+      echo "Ошибка при выполнении system_worker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
   fi
   sleep 1000
 }
@@ -118,6 +130,8 @@ line_1
 elixir_worker
 line_1
 rivalz_worker
+line_1
+system_worker
 line_2
 end_work
 line_2
