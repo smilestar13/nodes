@@ -132,6 +132,18 @@ function system_worker {
   sleep 1000
 }
 
+function nesa_health { 
+  echo "Запуск nesa_health.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
+  ansible-playbook -i inventory nesa_auto_restart.yml >> $LOG_FILE 2>&1
+
+  if [ $? -eq 0 ]; then
+      echo "nesa_health.yml выполнен успешно в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
+  else
+      echo "Ошибка при выполнении nesa_health.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
+  fi
+  sleep 1000
+}
+
 function end_work {
   echo "Период отчетов успешно окончен в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
   cd /root/vprofile/node
@@ -160,6 +172,8 @@ line_1
 nesa_worker
 line_1
 system_worker
+line_1
+nesa_health
 line_2
 end_work
 line_2
