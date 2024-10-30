@@ -120,6 +120,18 @@ function nesa_worker {
   sleep 1000
 }
 
+function nillion_worker { 
+  echo "Запуск проверки nillion_worker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
+  ansible-playbook -i inventory nillion_checker.yml -f 1 >> $LOG_FILE 2>&1
+
+  if [ $? -eq 0 ]; then
+      echo "nillion_worker.yml выполнен успешно в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
+  else
+      echo "Ошибка при выполнении nillion_worker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
+  fi
+  sleep 1000
+}
+
 function system_worker { 
   echo "Запуск проверки system_worker.yml в $(date '+%d-%m-%Y %H:%M:%S')" >> $LOG_FILE
   ansible-playbook -i inventory server-health.yml -f 1 >> $LOG_FILE 2>&1
@@ -170,6 +182,8 @@ line_1
 hemi_worker
 line_1
 nesa_worker
+line_1
+nillion_worker
 line_1
 system_worker
 line_1
