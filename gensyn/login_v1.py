@@ -165,23 +165,23 @@ login_button = wait.until(
     EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'Sign in')]"))
 )
 print("Кнопка Sign in найдена!")
-print("=== DEBUG: HTML страницы ===")
-print(driver.page_source)  # весь HTML страницы
-print("=== DEBUG: Все кнопки на странице ===")
-buttons = driver.find_elements(By.TAG_NAME, "button")
-for i, btn in enumerate(buttons, start=1):
-    text = btn.text.strip()
-    print(f"{i}: '{text}'")
-print("=== Конец DEBUG ===")
-
 login_button.click()
 print("Кнопка Sign in натиснута!")
 time.sleep(2)
 
 # Крок 2: Чекаємо інпут для email і вписуємо адресу
-# --- DEBUG: HTML после клика ---
-print("=== DEBUG: HTML страницы после Sign in ===")
+email_input = wait.until(
+    EC.visibility_of_element_located((By.CSS_SELECTOR, "input[type='email'][placeholder='Email']"))
+)
+print("Інпут для email знайдено!")
+email_input.clear()
+email_input.send_keys(EMAIL)
+print("Email вписано!")
+
+# --- DEBUG: HTML после ввода email ---
+print("=== DEBUG: HTML страницы после ввода email ===")
 print(driver.page_source[:5000])  # первые 5000 символов, чтобы не перегружать лог
+
 print("=== DEBUG: Все кнопки на странице ===")
 buttons = driver.find_elements(By.TAG_NAME, "button")
 for i, btn in enumerate(buttons, start=1):
@@ -197,13 +197,6 @@ for i, inp in enumerate(inputs, start=1):
     input_placeholder = inp.get_attribute("placeholder")
     print(f"{i}: type='{input_type}', name='{input_name}', id='{input_id}', placeholder='{input_placeholder}'")
 print("=== Конец DEBUG ===")
-email_input = wait.until(
-    EC.visibility_of_element_located((By.CSS_SELECTOR, "input[type='email'][placeholder='EMAIL@EXAMPLE.COM']"))
-)
-print("Інпут для email знайдено!")
-email_input.clear()
-email_input.send_keys(EMAIL)
-print("Email вписано!")
 
 # Крок 3: Чекаємо кнопку Continue
 continue_button = wait.until(
