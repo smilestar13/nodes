@@ -199,8 +199,27 @@ for i, inp in enumerate(inputs, start=1):
 print("=== Конец DEBUG ===")
 
 # Крок 3: Чекаємо кнопку Continue
+# --- DEBUG: HTML перед нажатием Continue ---
+print("=== DEBUG: HTML страницы перед нажатием Continue ===")
+print(driver.page_source[:5000])  # первые 5000 символов
+
+print("=== DEBUG: Все кнопки на странице перед нажатием Continue ===")
+buttons = driver.find_elements(By.TAG_NAME, "button")
+for i, btn in enumerate(buttons, start=1):
+    text = btn.text.strip()
+    print(f"{i}: '{text}'")
+
+print("=== DEBUG: Все input поля на странице перед нажатием Continue ===")
+inputs = driver.find_elements(By.TAG_NAME, "input")
+for i, inp in enumerate(inputs, start=1):
+    input_type = inp.get_attribute("type")
+    input_name = inp.get_attribute("name")
+    input_id = inp.get_attribute("id")
+    input_placeholder = inp.get_attribute("placeholder")
+    print(f"{i}: type='{input_type}', name='{input_name}', id='{input_id}', placeholder='{input_placeholder}'")
+print("=== Конец DEBUG ===")
 continue_button = wait.until(
-    EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'CONTINUE WITH EMAIL')]"))
+    EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'Continue')]"))
 )
 print("Кнопка Continue знайдена!")
 
