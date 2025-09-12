@@ -218,7 +218,6 @@ if code:
     print("Кнопка VERIFY CODE найдена!")
     verify_button.click()
     print("Код подтвержден!")
-        
     else:
         print("Не знайдено всі 6 input-ів для коду!")
 else:
