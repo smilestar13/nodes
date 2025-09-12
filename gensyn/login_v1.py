@@ -178,27 +178,9 @@ email_input.clear()
 email_input.send_keys(EMAIL)
 print("Email вписано!")
 
-# --- DEBUG: HTML после ввода email ---
-print("=== DEBUG: HTML страницы после ввода email ===")
-print(driver.page_source[:5000])  # первые 5000 символов, чтобы не перегружать лог
-
-print("=== DEBUG: Все кнопки на странице ===")
-buttons = driver.find_elements(By.TAG_NAME, "button")
-for i, btn in enumerate(buttons, start=1):
-    text = btn.text.strip()
-    print(f"{i}: '{text}'")
-
-print("=== DEBUG: Все input поля на странице ===")
-inputs = driver.find_elements(By.TAG_NAME, "input")
-for i, inp in enumerate(inputs, start=1):
-    input_type = inp.get_attribute("type")
-    input_name = inp.get_attribute("name")
-    input_id = inp.get_attribute("id")
-    input_placeholder = inp.get_attribute("placeholder")
-    print(f"{i}: type='{input_type}', name='{input_name}', id='{input_id}', placeholder='{input_placeholder}'")
-print("=== Конец DEBUG ===")
-
 # Крок 3: Чекаємо кнопку Continue
+print("Текущий URL:", driver.current_url)
+time.sleep(2)
 # --- DEBUG: HTML перед нажатием Continue ---
 print("=== DEBUG: HTML страницы перед нажатием Continue ===")
 print(driver.page_source[:5000])  # первые 5000 символов
