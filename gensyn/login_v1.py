@@ -6,17 +6,108 @@ from imapclient import IMAPClient
 import pyzmail
 import time
 import re
+from datetime import datetime, timezone, timedelta
 import os
-from datetime import datetime, timezone
-from selenium.webdriver.chrome.service import Service
+import getpass
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 import threading
 
+print("Очікую 15 секунд перед запуском порта...")
+time.sleep(15)
 LOGIN_URL = "http://localhost:3000"
-CODE_WAIT_TIMEOUT = 180  # 3 минуты
-FUTURE_ALLOWANCE_SECONDS = 14400  # 4 часа
+CODE_WAIT_TIMEOUT = 180  # секунд (3 хвилини)
+FUTURE_ALLOWANCE_SECONDS = 14400 
 
-# ---------------- EMAIL ----------------
+# Шукаємо лише листи, які прийшли після натискання Continue (по timestamp)
+def get_new_verification_code_after_continue_by_time(ts_after_continue, max_age_seconds=120):
+    with IMAPClient(IMAP_SERVER, port=IMAP_PORT, ssl=True) as client:
+        client.login(EMAIL, EMAIL_PASSWORD)
+        client.select_folder(IMAP_FOLDER)
+        code = None
+        start_time = time.time()
+        tried_relaxed = False
+        while time.time() - start_time < CODE_WAIT_TIMEOUT:
+            messages = client.search(['ALL'])
+            now = datetime.now(timezone.utc)
+            found_valid = False
+            for uid in reversed(messages):  # від найновіших до старих
+                envelope = client.fetch([uid], ['ENVELOPE'])[uid][b'ENVELOPE']
+                msg_date = envelope.date.replace(tzinfo=timezone.utc)
+                age = (now - msg_date).total_seconds()
+                future_delta = (msg_date - now).total_seconds()
+                after_continue_delta = msg_date.timestamp() - ts_after_continue
+                # Діагностичний лог
+                print(f"UID: {uid}, Тема: {envelope.subject.decode() if envelope.subject else ''}, Дата: {msg_date}, Вік (сек): {age}, ΔпісляContinue={after_continue_delta}, Δмайбутнє={future_delta}")
+                # Ігноруємо листи, які занадто далеко у майбутньому (більше FUTURE_ALLOWANCE_SECONDS)
+                if future_delta > FUTURE_ALLOWANCE_SECONDS:
+                    continue
+                # Основний фільтр: після натискання Continue
+                if (msg_date.timestamp() > ts_after_continue and age <= max_age_seconds) or (tried_relaxed and age <= 600):
+                    found_valid = True
+                    raw_message = client.fetch([uid], ['BODY[]'])[uid][b'BODY[]']
+                    message = pyzmail.PyzMessage.factory(raw_message)
+                    subject = message.get_subject()
+                    if ("login code" in subject.lower() and "gensyn" in subject.lower()) or ("code" in subject.lower()):
+                        text = None
+                        if message.text_part:
+                            text = message.text_part.get_payload().decode(message.text_part.charset)
+                        elif message.html_part:
+                            text = message.html_part.get_payload().decode(message.html_part.charset)
+                        if text:
+                            m = re.search(r'\b(\d{6})\b', text)
+                            if m:
+                                code = m.group(1)
+                                print(f"Код знайдено, вводимо у форму! Код: {code}")
+                                return code
+            if not found_valid:
+                print("[INFO] Немає валідних листів після натискання Continue (або всі з майбутнім часом)")
+            # Якщо не знайдено коду за 60 секунд, пробуємо розширити фільтр (останні 10 хвилин)
+            if not tried_relaxed and time.time() - start_time > 60:
+                print("[INFO] Розширюємо фільтр: шукаємо код у листах за останні 10 хвилин!")
+                tried_relaxed = True
+            time.sleep(1)  # Зменшено з 5 до 1 секунди
+        print("Не знайдено нових листів із кодом після натискання Continue!")
+        return None
+
+def print_latest_email_info():
+    print("=== Інформація про найновіший лист у INBOX ===")
+    with IMAPClient(IMAP_SERVER, port=IMAP_PORT, ssl=True) as client:
+        client.login(EMAIL, EMAIL_PASSWORD)
+        client.select_folder(IMAP_FOLDER)
+        messages = client.search(['ALL'])
+        if not messages:
+            print("[WARN] INBOX порожній!")
+            return
+        latest_uid = messages[-1]
+        envelope = client.fetch([latest_uid], ['ENVELOPE'])[latest_uid][b'ENVELOPE']
+        msg_date = envelope.date.replace(tzinfo=timezone.utc)
+        subject = envelope.subject.decode() if envelope.subject else ''
+        print(f"UID: {latest_uid}")
+        print(f"Тема: {subject}")
+        print(f"Дата (з IMAP, UTC): {msg_date}")
+        print(f"Дата (timestamp): {msg_date.timestamp()}")
+        print("=============================================")
+
+def get_latest_code_from_subject():
+    with IMAPClient(IMAP_SERVER, port=IMAP_PORT, ssl=True) as client:
+        client.login(EMAIL, EMAIL_PASSWORD)
+        client.select_folder(IMAP_FOLDER)
+        messages = client.search(['ALL'])
+        if not messages:
+            print("[WARN] INBOX порожній!")
+            return None
+        latest_uid = messages[-1]
+        envelope = client.fetch([latest_uid], ['ENVELOPE'])[latest_uid][b'ENVELOPE']
+        subject = envelope.subject.decode() if envelope.subject else ''
+        # Шукаємо 6 цифр на початку теми
+        m = re.match(r'^(\d{6})', subject.strip())
+        if m:
+            return m.group(1)
+        else:
+            print(f"[WARN] Не знайдено коду у темі: {subject}")
+            return None
+
 def load_email_env():
     env_path = '.env.email'
     config = {}
@@ -47,28 +138,10 @@ def load_email_env():
         print(f"[INFO] Дані збережено у {env_path}")
     return config
 
-def get_latest_code_from_subject():
-    with IMAPClient(IMAP_SERVER, port=IMAP_PORT, ssl=True) as client:
-        client.login(EMAIL, EMAIL_PASSWORD)
-        client.select_folder(IMAP_FOLDER)
-        messages = client.search(['ALL'])
-        if not messages:
-            print("[WARN] INBOX пуст!")
-            return None
-        latest_uid = messages[-1]
-        envelope = client.fetch([latest_uid], ['ENVELOPE'])[latest_uid][b'ENVELOPE']
-        subject = envelope.subject.decode() if envelope.subject else ''
-        m = re.match(r'^(\d{6})', subject.strip())
-        if m:
-            return m.group(1)
-        else:
-            print(f"[WARN] Код в теме письма не найден: {subject}")
-            return None
-
-# ---------------- SELENIUM ----------------
+# --- Завантажуємо налаштування ---
 config = load_email_env()
-EMAIL = config.get('EMAIL')
-EMAIL_PASSWORD = config.get('EMAIL_PASSWORD')
+EMAIL = config.get('EMAIL', '')
+EMAIL_PASSWORD = config.get('EMAIL_PASSWORD', '')
 IMAP_SERVER = config.get('IMAP_SERVER', 'imap.gmail.com')
 IMAP_PORT = int(config.get('IMAP_PORT', 993))
 IMAP_FOLDER = config.get('IMAP_FOLDER', 'INBOX')
@@ -78,63 +151,74 @@ options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 
+# --- НЕ додаємо user-data-dir для headless серверів ---
+
 service = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=service, options=options)
-wait = WebDriverWait(driver, 30)
 
-print("Открываем страницу...")
 driver.get(LOGIN_URL)
 
-# --- Шаг 1: кнопка Sign in ---
+wait = WebDriverWait(driver, 30)
+
+# Крок 1: Чекаємо кнопку Login і натискаємо
 login_button = wait.until(
     EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'Sign in')]"))
 )
 print("Кнопка Sign in найдена!")
 login_button.click()
+print("Кнопка Sign in натиснута!")
 
-# --- Шаг 2: поле email ---
+# Крок 2: Чекаємо інпут для email і вписуємо адресу
 email_input = wait.until(
     EC.visibility_of_element_located((By.CSS_SELECTOR, "input[type='email'][placeholder='EMAIL@EXAMPLE.COM']"))
 )
-print("Поле для email найдено!")
+print("Інпут для email знайдено!")
 email_input.clear()
 email_input.send_keys(EMAIL)
+print("Email вписано!")
 
-# --- Шаг 3: кнопка Continue ---
+# Крок 3: Чекаємо кнопку Continue
 continue_button = wait.until(
     EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'CONTINUE WITH EMAIL')]"))
 )
-print("Кнопка CONTINUE WITH EMAIL найдена!")
+print("Кнопка Continue знайдена!")
+
+# --- Перед натисканням Continue зберігаємо поточний timestamp ---
+ts_before_continue = time.time()
+
 continue_button.click()
+print("Кнопка Continue натиснута!")
 
-print("Ждем 30 секунд, пока придет письмо...")
+print("Очікуємо 30 секунд, щоб лист з кодом встиг прийти...")
 time.sleep(30)
-
-# --- Шаг 4: достаем код из почты ---
 code = get_latest_code_from_subject()
 if code:
-    print(f"Код из письма: {code}")
-
+    print(f"Код з теми листа: {code}")
     otp_input = wait.until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "input[placeholder='••••••'][maxlength='6']"))
     )
-    otp_input.clear()
-    otp_input.send_keys(code)
-    print("Код введен!")
-
-    # --- Шаг 5: кнопка Verify ---
+    if len(otp_inputs) >= 6:
+        for i, digit in enumerate(code):
+            otp_inputs[i].clear()
+            otp_inputs[i].send_keys(digit)
+        print("Код вписано у всі поля!")
+    print("Find VERIFY BTN!")
     verify_button = wait.until(
         EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'VERIFY CODE')]"))
     )
     print("Кнопка VERIFY CODE найдена!")
     verify_button.click()
     print("Код подтвержден!")
+        
+    else:
+        print("Не знайдено всі 6 input-ів для коду!")
 else:
-    print("Не удалось достать код из письма!")
+    print("Не вдалося знайти код у темі найновішого листа.")
 
-# --- Выход через 1 минуту ---
+# --- Замість time.sleep(60) і driver.quit() ---
 def delayed_quit(driver, delay=60):
     time.sleep(delay)
     driver.quit()
 
 threading.Thread(target=delayed_quit, args=(driver, 60), daemon=True).start()
+# Основний код одразу завершується, браузер закриється через 60 секунд у фоні
