@@ -23,13 +23,28 @@ def load_email_env():
     if os.path.exists(env_path):
         with open(env_path, 'r') as f:
             for line in f:
+                line = line.strip()
                 if not line or line.startswith('#') or '=' not in line:
                     continue
                 k, v = line.split('=', 1)
                 config[k.strip()] = v.strip()
-        print(f"[INFO] Загружены настройки из {env_path}")
+        print(f"[INFO] Завантажено налаштування з {env_path}")
     else:
-        raise RuntimeError("Файл .env.email не найден!")
+        print(f"[INFO] Файл {env_path} не знайдено. Введіть дані вручну (Enter — стандартне для Gmail):")
+        config['EMAIL'] = input('Email: ').strip()
+        config['EMAIL_PASSWORD'] = input('Пароль від пошти (App Password для Gmail): ').strip()
+        config['IMAP_SERVER'] = input('IMAP сервер [imap.gmail.com]: ').strip() or 'imap.gmail.com'
+        port = input('IMAP порт [993]: ').strip()
+        config['IMAP_PORT'] = int(port) if port else 993
+        config['IMAP_FOLDER'] = input('IMAP папка [INBOX]: ').strip() or 'INBOX'
+        # Зберігаємо у .env.email
+        with open(env_path, 'w') as f:
+            f.write(f"EMAIL={config['EMAIL']}\n")
+            f.write(f"EMAIL_PASSWORD={config['EMAIL_PASSWORD']}\n")
+            f.write(f"IMAP_SERVER={config['IMAP_SERVER']}\n")
+            f.write(f"IMAP_PORT={config['IMAP_PORT']}\n")
+            f.write(f"IMAP_FOLDER={config['IMAP_FOLDER']}\n")
+        print(f"[INFO] Дані збережено у {env_path}")
     return config
 
 def get_latest_code_from_subject():
