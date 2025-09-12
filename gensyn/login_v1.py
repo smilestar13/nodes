@@ -165,6 +165,15 @@ login_button = wait.until(
     EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'Sign in')]"))
 )
 print("Кнопка Sign in найдена!")
+print("=== DEBUG: HTML страницы ===")
+print(driver.page_source)  # весь HTML страницы
+print("=== DEBUG: Все кнопки на странице ===")
+buttons = driver.find_elements(By.TAG_NAME, "button")
+for i, btn in enumerate(buttons, start=1):
+    text = btn.text.strip()
+    print(f"{i}: '{text}'")
+print("=== Конец DEBUG ===")
+
 login_button.click()
 print("Кнопка Sign in натиснута!")
 
