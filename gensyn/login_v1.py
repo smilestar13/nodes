@@ -176,8 +176,27 @@ print("=== Конец DEBUG ===")
 
 login_button.click()
 print("Кнопка Sign in натиснута!")
+time.sleep(2)
 
 # Крок 2: Чекаємо інпут для email і вписуємо адресу
+# --- DEBUG: HTML после клика ---
+print("=== DEBUG: HTML страницы после Sign in ===")
+print(driver.page_source[:5000])  # первые 5000 символов, чтобы не перегружать лог
+print("=== DEBUG: Все кнопки на странице ===")
+buttons = driver.find_elements(By.TAG_NAME, "button")
+for i, btn in enumerate(buttons, start=1):
+    text = btn.text.strip()
+    print(f"{i}: '{text}'")
+
+print("=== DEBUG: Все input поля на странице ===")
+inputs = driver.find_elements(By.TAG_NAME, "input")
+for i, inp in enumerate(inputs, start=1):
+    input_type = inp.get_attribute("type")
+    input_name = inp.get_attribute("name")
+    input_id = inp.get_attribute("id")
+    input_placeholder = inp.get_attribute("placeholder")
+    print(f"{i}: type='{input_type}', name='{input_name}', id='{input_id}', placeholder='{input_placeholder}'")
+print("=== Конец DEBUG ===")
 email_input = wait.until(
     EC.visibility_of_element_located((By.CSS_SELECTOR, "input[type='email'][placeholder='EMAIL@EXAMPLE.COM']"))
 )
