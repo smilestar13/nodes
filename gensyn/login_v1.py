@@ -203,21 +203,22 @@ time.sleep(30)
 code = get_latest_code_from_subject()
 if code:
     print(f"Код з теми листа: {code}")
-    otp_input = wait.until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, "input[placeholder='••••••'][maxlength='6']"))
+    otp_inputs = wait.until(
+        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "input[placeholder='••••••'][maxlength='6']"))
     )
     if len(otp_inputs) >= 6:
         for i, digit in enumerate(code):
             otp_inputs[i].clear()
             otp_inputs[i].send_keys(digit)
         print("Код вписано у всі поля!")
-    print("Find VERIFY BTN!")
-    verify_button = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'VERIFY CODE')]"))
-    )
-    print("Кнопка VERIFY CODE найдена!")
-    verify_button.click()
-    print("Код подтвержден!")
+
+        print("Find VERIFY BTN!")
+        verify_button = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'VERIFY CODE')]"))
+        )
+        print("Кнопка VERIFY CODE знайдена!")
+        verify_button.click()
+        print("Код подтвержден!")
     else:
         print("Не знайдено всі 6 input-ів для коду!")
 else:
