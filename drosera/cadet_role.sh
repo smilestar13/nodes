@@ -46,7 +46,7 @@ contract Trap is ITrap {
     function collect() external view returns (bytes memory) {
         bool active = IMockResponse(RESPONSE_CONTRACT).isActive();
         bytes memory payload = abi.encode(active, DISCORD_NAME);
-        return abi.encodePacked(uint16(1), payload); // версионированный заголовок
+        return abi.encode(uint16(1), payload); // ABI-кортеж (uint16, bytes)
     }
 
     function shouldRespond(bytes[] calldata data) external pure returns (bool, bytes memory) {
@@ -62,11 +62,13 @@ contract Trap is ITrap {
 }
 EOF
 
-# Обновляем в drosera.toml нужные поля
-sed -i 's|^path = .*|path = "out/Trap.sol/Trap.json"|' drosera.toml
-sed -i 's|^response_contract = .*|response_contract = "0x25E2CeF36020A736CF8a4D2cAdD2EBE3940F4608"|' drosera.toml
-sed -i 's|^response_function = .*|response_function = "respondWithDiscordName(string)"|' drosera.toml
-sed -i 's/^\[traps\..*\]/[traps.mytrap]/' drosera.toml
+cat > drosera.toml <<EOF
+path = "out/Trap.sol/Trap.json"
+response_contract = "0x25E2CeF36020A736CF8a4D2cAdD2EBE3940F4608"
+response_function = "respondWithDiscordName(string)"
+
+[traps.mytrap]
+EOF
 
 # Собираем контракт
 echo -e "${BLUE}Запускаем forge build...${NC}"
