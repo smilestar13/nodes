@@ -51,13 +51,14 @@ contract Trap is ITrap {
 
     function shouldRespond(bytes[] calldata data) external pure returns (bool, bytes memory) {
         // take the latest block data from collect
-        (bool active, string memory name) = abi.decode(data[0], (bool, string));
+        (uint16 version, bytes memory payload) = abi.decode(data[0], (uint16, bytes));
         // will not run if the contract is not active or the discord name is not set
+        if (version != 1) return (false, bytes(""));
+        (bool active, string memory name) = abi.decode(payload, (bool, string));
         if (!active || bytes(name).length == 0) {
             return (false, bytes(""));
         }
-
-        return (true, abi.encode(name));
+        return (true, abi.encode(name)); // В respondWithDiscordName улетит ЧИСТЫЙ name
     }
 }
 EOF
