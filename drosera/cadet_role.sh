@@ -69,8 +69,8 @@ sed -i 's|^response_function = .*|response_function = "respondWithDiscordName(st
 sed -i 's/^\[traps\..*\]/[traps.mytrap]/' drosera.toml
 
 # Собираем контракт
-echo -e "${BLUE}Запускаем forge build...${NC}"
-forge build
+echo -e "${BLUE}Чистим и собираем...${NC}"
+forge clean && rm -rf out cache && forge build
 
 # Запускаем пробный прогон
 echo -e "${BLUE}Запускаем drosera dryrun...${NC}"
