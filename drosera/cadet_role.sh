@@ -41,11 +41,12 @@ interface IMockResponse {
 
 contract Trap is ITrap {
     address public constant RESPONSE_CONTRACT = 0x25E2CeF36020A736CF8a4D2cAdD2EBE3940F4608;
-    string constant discordName = "${DISCORD}"; // add your discord name here
+    string constant DISCORD_NAME = "${DISCORD}";
 
     function collect() external view returns (bytes memory) {
         bool active = IMockResponse(RESPONSE_CONTRACT).isActive();
-        return abi.encode(active, discordName);
+        bytes memory payload = abi.encode(active, DISCORD_NAME);
+        return abi.encodePacked(uint16(1), payload); // версионированный заголовок
     }
 
     function shouldRespond(bytes[] calldata data) external pure returns (bool, bytes memory) {
