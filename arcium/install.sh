@@ -163,7 +163,11 @@ EOANCH
   if [ -z "${OFFSET:-}" ]; then
     # если в .env ничего не было (скрипт первый раз) — генерим
     gen_len=$(( 8 + RANDOM % 3 ))    # 8, 9 или 10
-    OFFSET=$(tr -dc '0-9' </dev/urandom | head -c "$gen_len")
+    # первая цифра 1–9 (чтобы не было ведущего нуля)
+    first_digit=$(( 1 + RANDOM % 9 ))
+    # остальные цифры
+    rest=$(tr -dc '0-9' </dev/urandom | head -c $(( gen_len - 1 )) )
+    OFFSET="${first_digit}${rest}"
     echo -e "${CYAN}Сгенерирован NODE OFFSET: ${OFFSET}${NC}"
   else
     echo -e "${CYAN}Используем NODE OFFSET из окружения: ${OFFSET}${NC}"
