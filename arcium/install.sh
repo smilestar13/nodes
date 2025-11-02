@@ -150,9 +150,13 @@ EOANCH
   # ======================= Сбор параметров =======================
   : "${RPC_HTTP:=$RPC_DEFAULT_HTTP}"; : "${RPC_WSS:=$RPC_DEFAULT_WSS}"
 
-  echo -ne "${YELLOW}Введите Solana RPC HTTP [${RPC_HTTP}]: ${NC}"; read -r ans; RPC_HTTP=${ans:-$RPC_HTTP}
-  echo -ne "${YELLOW}Введите Solana RPC WSS  [${RPC_WSS}]: ${NC}"; read -r ans; RPC_WSS=${ans:-$RPC_WSS}
-
+  # Используем RPC по умолчанию (без запроса у пользователя)
+  RPC_HTTP="$RPC_DEFAULT_HTTP"
+  RPC_WSS="$RPC_DEFAULT_WSS"
+  echo -e "${CYAN}Используется стандартный RPC:${NC}"
+  echo -e "  HTTP → ${RPC_HTTP}"
+  echo -e "  WSS  → ${RPC_WSS}"
+  
   # --- вместо:
   # echo -ne "${YELLOW}Придумайте уникальный NODE OFFSET (8–10 цифр): ${NC}"; read -r OFFSET
   # OFFSET=$(printf '%s' "$OFFSET" | sed -n 's/[^0-9]*\([0-9][0-9]*\).*/\1/p')
