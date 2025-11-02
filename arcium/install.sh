@@ -248,17 +248,15 @@ EOF
   NB=$(balance_of "$NODE_PK"); CB=$(balance_of "$CB_PK")
   echo -e "${PURPLE}Балансы (devnet):${NC}\n  Node: ${NB} SOL\n  Callback: ${CB} SOL"
   
-  # Если 0 — даём пользователю пополнить вручную и жмём Enter
+  # Проверяем, что на ОБОИХ адресах есть хоть что-то (>0)
   if ! awk "BEGIN{exit !($NB>0 && $CB>0)}"; then
-    echo -e "${YELLOW}Нужно пополнить оба адреса (Devnet). Открой: https://faucet.solana.com/${NC}"
-    read -rp "Пополните кошельки и нажмите Enter для продолжения..." _
-    NB=$(balance_of "$NODE_PK"); CB=$(balance_of "$CB_PK")
-    echo -e "Проверка ещё раз: Node=${NB} SOL, Callback=${CB} SOL"
-    if ! awk "BEGIN{exit !($NB>0 && $CB>0)}"; then
-      echo -e "${RED}На счетах всё ещё 0. Останавливаю установку. Запустите пункт 2 заново после пополнения.${NC}"
-      exit 1
-    fi
+    echo -e "${RED}❗ Недостаточно средств на Devnet-адресах.${NC}"
+    echo -e "${YELLOW}Node: ${NB} SOL${NC}"
+    echo -e "${YELLOW}Callback: ${CB} SOL${NC}"
+    echo -e "${CYAN}Пополните оба адреса через faucet и запустите пункт 2 ещё раз.${NC}"
+    exit 1
   fi
+
 
   # Инициализация on-chain аккаунтов ноды (пути один-в-один)
   echo -e "${BLUE}Инициализируем on-chain аккаунты (arcium init-arx-accs)...${NC}"
