@@ -586,7 +586,6 @@ EOF
       echo -e "${PURPLE}Ctrl+C для выхода из логов${NC}"
       sleep 2
       docker exec -it "$CONTAINER_NAME" sh -lc 'tail -n +1 -f "$(ls -t /usr/arx-node/logs/arx_log_*.log 2>/dev/null | head -1)"' || true
-      fi
       ;;
     *) ;;
   esac
