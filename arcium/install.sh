@@ -370,6 +370,7 @@ EOF
   echo -e "${CYAN}8) Показать адреса и балансы${NC}"
   echo -e "${CYAN}9) Devnet токены (2 SOL на каждый адрес)${NC}"
   echo -e "${CYAN}10) Показать сид-фразы${NC}"
+  echo -e "${CYAN}11) Обновить ноду до v0.4.0${NC}"
   echo -ne "${YELLOW}Введите номер: ${NC}"; read -r t
   case "$t" in
     1)
