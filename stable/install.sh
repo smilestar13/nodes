@@ -234,12 +234,6 @@ EOF
   ;;
 # ==================== 5) Обновление ноды до v${TARGET_VER} =====================
 5)
-  echo -ne "${YELLOW}Обновить ${APP_NAME} до v${TARGET_VER}? (YES/NO) ${NC}"; read -r CONFIRM
-  if [ "$CONFIRM" != "YES" ]; then
-    echo -e "${PURPLE}Отмена.${NC}"
-    exit 0
-  fi
-
   # Определяем архитектуру и URL новой версии
   ARCH="$(dpkg --print-architecture 2>/dev/null || uname -m || echo unknown)"
   
